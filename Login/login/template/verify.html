@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>verify : page</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-4bw+/aepP/YC94hEpVNVgiZdgIC5+VKNBQNGCHeKRQN+PtmoHDEXuppvnDJzQIu9" crossorigin="anonymous">
+    <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+</head>
+
+<body>
+    <h1 class="container"
+        style="text-transform: capitalize; margin-top: 30px; margin-bottom: 30px; text-align: center;">OTP Verification
+    </h1>
+    <div class="container">
+        <div style="border: 1px solid #000100; padding: 20px; border-radius: 15px;">
+            {% for message in messages %}
+            <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+                <strong>Messages :</strong> {{ message }}
+            </div>
+            {% endfor %}
+            <form method="post">
+                {% csrf_token %}
+                <div class="mb-3">
+                    <label for="text" class="form-label">OTP</label>
+                    <input type="text" name="otp" class="form-control" id="otp" aria-describedby="emailHelp">
+                </div>
+                <button type="submit" class="btn btn-primary">Submit</button>
+            </form>
+        </div>
+    </div>
+    <script>
+        $('#otp').change(function () {
+            let otp = $('#otp').val();
+            console.log(otp)
+
+            if (otp == '{{otp}}') {
+                console.log('otp matched')
+
+                $.ajax({
+                    type: 'POST',
+                    url: '{% url "verify" %}',
+                    data: { 'otp': otp, 'firstn': "{{firstn}}", 'lastn': "{{lastn}}", 'phone': "{{phone}}", 'email': "{{email}}", 'password': "{{password}}" },
+                    success: function (data) {
+                        console.log('otp success')
+                        // window.setTimeout(window.location.href = "/login",5000);
+                    }
+                })
+            }
+        })
+    </script>
+</body>
+
+</html>
